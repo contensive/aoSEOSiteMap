@@ -1,6 +1,6 @@
 Type=OleDll
-Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\..\Windows\system32\stdole2.tlb#OLE Automation
-Reference=*\G{DFF3508D-D3BF-4D2E-AE73-A8374E764F07}#3.3#0#..\..\..\..\..\..\Program Files\Common Files\kma Shared\kmafile3.dll#kma File System v3
+Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\..\Windows\SysWOW64\stdole2.tlb#OLE Automation
+Reference=*\G{DFF3508D-D3BF-4D2E-AE73-A8374E764F07}#3.3#0#..\..\..\..\..\..\Program Files (x86)\kma\Contensive\kmafile3.dll#kma File System v3
 Class=SiteMapClass; SiteMapClass.cls
 Class=GenerationClass; GenerationClass.cls
 Class=SiteMap2Class; SiteMap2Class.cls
@@ -19,7 +19,7 @@ CompatibleEXE32="..\..\Release\aoSEOSiteMap.dll"
 VersionCompatible32="1"
 MajorVer=2
 MinorVer=0
-RevisionVer=3
+RevisionVer=7
 AutoIncrementVer=1
 ServerSupportFiles=0
 VersionCompanyName="KMAnet"
