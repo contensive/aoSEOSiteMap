@@ -19,7 +19,7 @@ Const MapFileName = "seoSiteMap.xml"
 Private isAliasing As Boolean
 Private PageNotFoundID As Long
 'Private siteTemplateID As Long
-Private PrimaryDomain As String
+Private primaryDomain As String
 Private DefaultPage As String
 '
 Private Const crlf = vbCrLf
@@ -61,9 +61,9 @@ Public Function Execute(CsvObject As Object, MainObject As Object, OptionString 
     '
     If InStr(1, csv.DomainName, ",", vbTextCompare) <> 0 Then
         Domain = Split(csv.DomainName, ",", , vbTextCompare)
-        PrimaryDomain = Domain(0)
+        primaryDomain = Domain(0)
     Else
-        PrimaryDomain = csv.DomainName
+        primaryDomain = csv.DomainName
     End If
     '
     cs = csv.OpenCSContent("Page Templates", "Name='Default'", , , , , , "ID")
@@ -81,35 +81,37 @@ Public Function Execute(CsvObject As Object, MainObject As Object, OptionString 
         If templateId = 0 Then
             templateId = siteTemplateID
         End If
-        xmlContent = xmlContent & getXmlNodeByPageId(rootPageId, False, templateId, usedUrlList)
+        xmlContent = xmlContent & getXmlNodeList(rootPageId, False, templateId, usedUrlList, primaryDomain)
         Call csv.NextCSRecord(cs)
     Loop
     Call csv.closecs(cs)
-    '
-    ' get all links from link alias
-    '
-    sql = "" _
-        & " select l.name" _
-        & " from cclinkaliases l left join ccpagecontent p on p.id=l.pageid" _
-        & " where (l.id in" _
-        & " (" _
-        & " select distinct max(id) from cclinkaliases group by pageid,querystringsuffix" _
-        & " ))" _
-        & " and(p.id is not null)" _
-        & " AND ((p.BlockContent=0) OR (p.BlockContent is Null))" _
-        & " AND ((p.BlockPage=0) OR (p.BlockPage is Null))" _
-        & " AND ((p.AllowInChildLists=1) OR (p.AllowInMenus=1))" _
-        & ""
-    cs = csv.openCsSql("default", sql, 1)
-    Do While csv.iscsok(cs)
-        pageLink = "http://" & PrimaryDomain & csv.getcsText(cs, "name")
-        If InStr(1, usedUrlList, pageLink, vbTextCompare) = 0 Then
-            usedUrlList = usedUrlList & crlf & pageLink
-            xmlContent = xmlContent & getXmlNode(pageLink, CDate(0))
-        End If
-        Call csv.NextCSRecord(cs)
-    Loop
-    Call csv.closecs(cs)
+'    '
+'    ' get all links from link alias
+'    '
+'    sql = "" _
+'        & " select l.name" _
+'        & " from" _
+'        & " cclinkaliases l" _
+'        & " left join ccpagecontent p on p.id=l.pageid" _
+'        & " where" _
+'        & " (l.id in (" _
+'        & " select distinct max(id) from cclinkaliases group by pageid,querystringsuffix" _
+'        & " ))" _
+'        & " and(p.id is not null)" _
+'        & " AND((p.BlockContent=0) OR (p.BlockContent is Null))" _
+'        & " AND((p.BlockPage=0) OR (p.BlockPage is Null))" _
+'        & " AND((p.AllowInChildLists=1) OR (p.AllowInMenus=1))" _
+'        & ""
+'    cs = csv.openCsSql("default", sql, 1)
+'    Do While csv.iscsok(cs)
+'        pageLink = "http://" & PrimaryDomain & csv.getcsText(cs, "name")
+'        If InStr(1, usedUrlList, pageLink, vbTextCompare) = 0 Then
+'            usedUrlList = usedUrlList & crlf & pageLink
+'            xmlContent = xmlContent & getXmlNode(pageLink, CDate(0))
+'        End If
+'        Call csv.NextCSRecord(cs)
+'    Loop
+'    Call csv.closecs(cs)
     '
     xmlContent = "" _
         & "<?xml version=""1.0"" encoding=""UTF-8""?>" _
@@ -137,17 +139,20 @@ End Function
 '
 '
 '
-Private Function getXmlNodeByPageId(nodePageID As Long, ParentFlag As Boolean, defaultTemplateId As Long, ByRef usedUrlList As String) As String
+Private Function getXmlNodeList(nodePageID As Long, ParentFlag As Boolean, defaultTemplateId As Long, ByRef usedUrlList As String, primaryDomain As String) As String
     On Error GoTo ErrorTrap
     '
+    Dim xmlNodeList As String
+    '
     Dim cs As Long
+    Dim cs2 As Long
     Dim Criteria As String
-    Dim xmlNode As String
     Dim RecordID As Long
     Dim pageLink As String
     Dim modifiedDate As Date
     Dim PageID As Long
     Dim PageTemplateID As Long
+    Dim sql As String
     '
     If nodePageID <> PageNotFoundID Then
         If ParentFlag Then
@@ -168,19 +173,45 @@ Private Function getXmlNodeByPageId(nodePageID As Long, ParentFlag As Boolean, d
                 If InStr(1, usedUrlList, pageLink, vbTextCompare) = 0 Then
                     usedUrlList = usedUrlList & crlf & pageLink
                     modifiedDate = KmaEncodeDate(csv.GetCSDate(cs, "ModifiedDate"))
-                    xmlNode = xmlNode & getXmlNode(pageLink, modifiedDate)
+                    xmlNodeList = xmlNodeList & getXmlNode(pageLink, modifiedDate)
                 End If
             End If
-            xmlNode = xmlNode & getXmlNodeByPageId(PageID, True, PageTemplateID, usedUrlList)
+            '
+            ' get addon-content links from link aliases
+            '
+            sql = "" _
+                & " select l.name" _
+                & " from" _
+                & " cclinkaliases l" _
+                & " left join ccpagecontent p on p.id=l.pageid" _
+                & " where" _
+                & " (l.id in (" _
+                & " select distinct max(id) from cclinkaliases where (pageid=" & PageID & ")and(querystringsuffix is not null) group by querystringsuffix" _
+                & " ))" _
+                & ""
+            cs2 = csv.openCsSql("default", sql, 1)
+            Do While csv.iscsok(cs2)
+                pageLink = "http://" & primaryDomain & csv.getcsText(cs2, "name")
+                If InStr(1, usedUrlList, pageLink, vbTextCompare) = 0 Then
+                    usedUrlList = usedUrlList & crlf & pageLink
+                    xmlNodeList = xmlNodeList & getXmlNode(pageLink, CDate(0))
+                End If
+                Call csv.NextCSRecord(cs2)
+            Loop
+            Call csv.closecs(cs2)
+            '
+            ' get child nodes
+            '
+            xmlNodeList = xmlNodeList & getXmlNodeList(PageID, True, PageTemplateID, usedUrlList, primaryDomain)
             Call csv.NextCSRecord(cs)
         Loop
         Call csv.closecs(cs)
     End If
     '
-    getXmlNodeByPageId = xmlNode
+    getXmlNodeList = xmlNodeList
     Exit Function
 ErrorTrap:
-    Call HandleError("GenerationClass", "getXmlNodeByPageId", Err.Number, Err.Source, Err.Description, True, False)
+    Call HandleError("GenerationClass", "getXmlNodeList", Err.Number, Err.Source, Err.Description, True, False)
 End Function
 '
 'Private Function getXmlNodeByCS(cs As Long, defaultTemplateId As Long) As String
@@ -203,7 +234,7 @@ End Function
 '            modifiedDate = KmaEncodeDate(csv.GetCSDate(cs, "ModifiedDate"))
 '            xmlNode = xmlNode & getXmlNode(pageLink, modifiedDate)
 '        End If
-'        xmlNode = xmlNode & getXmlNodeByPageId(PageID, True, PageTemplateID)
+'        xmlNode = xmlNode & getXmlNodeList(PageID, True, PageTemplateID)
 '    End If
 '    '
 '    getXmlNodeByCS = xmlNode
@@ -235,15 +266,14 @@ End Function
 '
 '
 Private Function GetPageLink(PageID, templateId) As String
-    On Error GoTo ErrorTrap
-
     Dim Stream As String
     Dim cs As Long
-    
+    '
+    On Error GoTo ErrorTrap
     If isAliasing Then
-        cs = csv.OpenCSContent("Link Aliases", "PageID=" & PageID, "id desc", , , , , "Name")
+        cs = csv.OpenCSContent("Link Aliases", "(PageID=" & PageID & ")and(queryStringSuffix is null)", "id desc", , , , , "Name")
         If csv.iscsok(cs) Then
-            Stream = "http://" & PrimaryDomain & csv.GetCS(cs, "Name")
+            Stream = "http://" & primaryDomain & csv.GetCS(cs, "Name")
         Else
             Stream = GetPageLinkByTemplate(PageID, templateId)
         End If
@@ -253,7 +283,7 @@ Private Function GetPageLink(PageID, templateId) As String
     End If
 
     GetPageLink = Stream
-
+    '
     Exit Function
 ErrorTrap:
     Call HandleError("GenerationClass", "GetPageLink", Err.Number, Err.Source, Err.Description, True, False)
@@ -284,8 +314,8 @@ Private Function GetPageLinkByTemplate(PageID, templateId) As String
         Stream = DefaultPage & "?bid=" & PageID
     End If
     
-    If InStr(1, Stream, PrimaryDomain, vbTextCompare) = 0 Then
-        Stream = PrimaryDomain & Stream
+    If InStr(1, Stream, primaryDomain, vbTextCompare) = 0 Then
+        Stream = primaryDomain & Stream
     End If
     
     If InStr(1, Stream, "://", vbTextCompare) = 0 Then
@@ -336,6 +366,6 @@ ErrorTrap:
     Call HandleError("SiteMapClass", "PadValue", Err.Number, Err.Source, Err.Description, True, False)
 End Function
 '
-Public Function main(obj As Object, str As String) As String
+Public Function Main(obj As Object, str As String) As String
 End Function
 
