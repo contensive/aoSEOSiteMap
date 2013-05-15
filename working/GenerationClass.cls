@@ -160,8 +160,9 @@ Private Function getXmlNodeList(nodePageID As Long, ParentFlag As Boolean, defau
         Else
             Criteria = "(ID=" & nodePageID & ")"
         End If
-        Criteria = Criteria & " AND ((BlockContent=0) OR (BlockContent is Null)) AND ((BlockPage=0) OR (BlockPage is Null)) AND ((AllowInChildLists=1) OR (AllowInMenus=1))"
-        cs = csv.OpenCSContent("Page Content", Criteria, "ID", , 0, , , "ID,ModifiedDate,BlockContent,BlockPage,AllowInChildLists,AllowInMenus,TemplateID,link")
+        Criteria = Criteria & " AND ((BlockContent=0) OR (BlockContent is Null)) AND ((BlockPage=0) OR (BlockPage is Null))"
+        'Criteria = Criteria & " AND ((BlockContent=0) OR (BlockContent is Null)) AND ((BlockPage=0) OR (BlockPage is Null)) AND ((AllowInChildLists=1) OR (AllowInMenus=1))"
+        cs = csv.OpenCSContent("Page Content", Criteria, "ID", , 0, , , "ID,ModifiedDate,BlockContent,BlockPage,TemplateID,link")
         Do While csv.iscsok(cs)
             PageTemplateID = csv.GetCSInteger(cs, "TemplateID")
             If PageTemplateID = 0 Then
