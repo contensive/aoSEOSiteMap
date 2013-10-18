@@ -7,12 +7,13 @@ using Contensive.BaseClasses;
 namespace aoSEOSiteMap
 {
     public class SiteMap2Class : AddonBaseClass
-    {
+    {   
         private const string MapFileName = "seoSiteMap.xml";
         public override object Execute(CPBaseClass cp)
         {
             try
             {
+                return "Hello World";
                 CPCSBaseClass cs = cp.CSNew();
                 CPFileBaseClass cpFile = cp.File;
                 cp.Response.Clear();

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Contensive.BaseClasses;
+using System.Collections;
+using Microsoft.VisualBasic;
 
 namespace aoSEOSiteMap
 {
@@ -12,19 +14,20 @@ namespace aoSEOSiteMap
         {
             try
             {
+                return "Hello World";
                 CPCSBaseClass cs = cp.CSNew();
                 isAliasing = cp.Doc.GetBoolean("ALLOWLINKALIAS", string.Empty);
                 pageNotFoundId = cp.Doc.GetInteger("PAGENOTFOUNDPAGEID", string.Empty);
                 defaultPage = cp.Doc.GetProperty("SERVERPAGEDEFAULT", string.Empty);
                 xmlContent = "";
-                if (cp.Site.Domain.IndexOf(",", 1, StringComparison.CurrentCulture) != 0)
+                if (cp.Site.DomainList.IndexOf(",", 1, StringComparison.CurrentCulture) != 0)
                 {
-                    domain = cp.Site.Domain.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    domain = cp.Site.DomainList.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     primaryDomain = domain[0];
                 }
                 else
                 {
-                    primaryDomain = cp.Site.Domain;
+                    primaryDomain = cp.Site.DomainList;
                 }
 
                 if (cs.Open("Page Templates", SQLCriteria: "Name='Default", SelectFieldList: "ID"))
@@ -46,15 +49,29 @@ namespace aoSEOSiteMap
                         xmlContent += getXmlNodeList(cp, cs, rootPageId, false, templateId, primaryDomain, ref usedUrlList);
                         cs.GoNext();
                     } while (cs.OK());
-                    cs.Close();
                 }
+                cs.Close();
+
+                xmlContent = "" + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + crlf + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" +
+                    // to ask about kmIndent 
+                             "" + crlf + "</urlset>" + "";
+                cf.Save(cp.Site.PhysicalFilePath + mapFileName, xmlContent);
+                domainNameList = cp.Site.DomainList;
+                int index = domainNameList.IndexOf(",", 1, StringComparison.CurrentCulture);
+                if (index > 0)
+                {
+                    domainNameList = Strings.Mid(domainNameList, 1, index - 1);
+                }
+                sql = "update ccaggregatefunctions set robotstxt='sitemap: http://" + domainNameList + "/SearchEngineSiteMap' where ccguid='{E036074B-6B71-4698-BA22-C34F7E9449E9}'";
+                cp.Db.ExecuteSQL(sql);
+                return cp.Db.ExecuteSQL(sql).ToString(); 
+
             }
             catch (Exception ex)
             {
                 cp.Site.ErrorReport(ex, "Unexpected trap");
                 return string.Empty;
             }
-            return "function output";
         }
 
         private string getXmlNodeList(CPBaseClass cp, CPCSBaseClass cs, long nodePageID, bool parentFlag, long defaultTemplateId, string primaryDomain, ref string usedUrlList)
@@ -104,7 +121,6 @@ namespace aoSEOSiteMap
                             sbSql = new StringBuilder();
                             if (cs.OpenSQL(sql, "default", PageNumber: 1))
                             {
-                                // while(cs.OK())
                                 do
                                 {
                                     pageLink = "http://" + primaryDomain + cp.Doc.GetText("name");
@@ -151,9 +167,77 @@ namespace aoSEOSiteMap
             }
         }
 
+        private string GetPageLink(CPBaseClass cp, CPCSBaseClass cs, int pageID, int templateId)
+        {
+            string stream = "";
+            if (isAliasing)
+            {
+                if (cs.Open("Link Aliases", SQLCriteria: "(PageID=" + pageID + ")and(queryStringSuffix is null)",
+                                            SelectFieldList: "ID", SortFieldList: "id desc"))
+                {
+                    if (cs.OK())
+                    {
+                        stream = "http://" + primaryDomain + cp.Doc.GetText("Name");
+                    }
+                    else
+                    {
+                        stream = getPageLinkByTemplate(cp, cs, pageID, templateId);
+                    }
+                }
+                cs.Close();
+            }
+            else
+            {
+                stream = getPageLinkByTemplate(cp, cs, pageID, templateId);
+            }
+            return stream;
+        }
+
+        private string getPageLinkByTemplate(CPBaseClass cp, CPCSBaseClass cs, int pageId, int templateId)
+        {
+            string stream = string.Empty, pageLink = string.Empty;
+            if (cs.Open("Page Templates", SQLCriteria: "ID=" + templateId, SelectFieldList: "Link"))
+            {
+                if (cs.OK())
+                {
+                    pageLink = cp.Doc.GetText("Link");
+                }
+            }
+            cs.Close();
+            if (pageLink != "")
+            {
+                if (pageLink.PadLeft(1) != "/")
+                {
+                    pageLink = "/" + pageLink;
+                }
+                stream = pageLink + "?bid=" + pageId;
+            }
+            else
+            {
+                if (defaultPage.PadLeft(1) != "/")
+                {
+                    defaultPage = "/" + defaultPage;
+                }
+                else
+                {
+                    stream = defaultPage + "?bid=" + pageId;
+                }
+            }
+            if (stream.IndexOf(primaryDomain, 1, StringComparison.CurrentCulture) == 0)
+            {
+                stream = primaryDomain + stream;
+            }
+
+            if (stream.IndexOf("://", 1, StringComparison.CurrentCulture) == 0)
+            {
+                stream = "http://" + stream;
+            }
+            return stream.Replace("&", "&amp;");
+        }
+
         private string getDateString(DateTime givenDate)
         {
-            if (givenDate.TimeOfDay != new TimeSpan(12, 00, 00))
+            if (givenDate != Microsoft.VisualBasic.DateAndTime.DateValue("0"))
             {
                 return givenDate.Year + "-" + padValue(givenDate.Month.ToString(), 2) + "-" + padValue(givenDate.Day.ToString(), 2);
             }
@@ -187,6 +271,7 @@ namespace aoSEOSiteMap
         private const string cr2 = "\n\t";
         private const string cr3 = "\n\t\t\t";
         private StringBuilder sbSql = new StringBuilder();
+        private const string mapFileName = "seoSiteMap.xml";
 
 
     }
