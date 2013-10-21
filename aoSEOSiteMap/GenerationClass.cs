@@ -14,7 +14,6 @@ namespace aoSEOSiteMap
         {
             try
             {
-                return "Hello World";
                 CPCSBaseClass cs = cp.CSNew();
                 isAliasing = cp.Doc.GetBoolean("ALLOWLINKALIAS", string.Empty);
                 pageNotFoundId = cp.Doc.GetInteger("PAGENOTFOUNDPAGEID", string.Empty);
@@ -53,7 +52,7 @@ namespace aoSEOSiteMap
                 cs.Close();
 
                 xmlContent = "" + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + crlf + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" +
-                    // to ask about kmIndent 
+                    + kmIndent+
                              "" + crlf + "</urlset>" + "";
                 cf.Save(cp.Site.PhysicalFilePath + mapFileName, xmlContent);
                 domainNameList = cp.Site.DomainList;
@@ -272,7 +271,7 @@ namespace aoSEOSiteMap
         private const string cr3 = "\n\t\t\t";
         private StringBuilder sbSql = new StringBuilder();
         private const string mapFileName = "seoSiteMap.xml";
-
+        private int kmIndent;
 
     }
 }
