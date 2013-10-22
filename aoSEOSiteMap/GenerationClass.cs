@@ -14,7 +14,6 @@ namespace aoSEOSiteMap
         {
             try
             {
-                return "Hello World";
                 CPCSBaseClass cs = cp.CSNew();
                 isAliasing = cp.Doc.GetBoolean("ALLOWLINKALIAS", string.Empty);
                 pageNotFoundId = cp.Doc.GetInteger("PAGENOTFOUNDPAGEID", string.Empty);
