@@ -15,6 +15,7 @@ namespace aoSEOSiteMap
             try
             {
                 CPCSBaseClass cs = cp.CSNew();
+                CPFileBaseClass cf = cp.File;
                 isAliasing = cp.Doc.GetBoolean("ALLOWLINKALIAS", string.Empty);
                 pageNotFoundId = cp.Doc.GetInteger("PAGENOTFOUNDPAGEID", string.Empty);
                 defaultPage = cp.Doc.GetProperty("SERVERPAGEDEFAULT", string.Empty);
@@ -62,8 +63,7 @@ namespace aoSEOSiteMap
                     domainNameList = Strings.Mid(domainNameList, 1, index - 1);
                 }
                 sql = "update ccaggregatefunctions set robotstxt='sitemap: http://" + domainNameList + "/SearchEngineSiteMap' where ccguid='{E036074B-6B71-4698-BA22-C34F7E9449E9}'";
-                cp.Db.ExecuteSQL(sql);
-                return cp.Db.ExecuteSQL(sql).ToString(); 
+                return Convert.ToString(cp.Db.ExecuteSQL(sql));
 
             }
             catch (Exception ex)
@@ -263,7 +263,7 @@ namespace aoSEOSiteMap
         private string primaryDomain, defaultPage, domainNameList, sql, xmlNode, xmlContent;
         private string temp, usedUrlList, pageLink;
         private string[] domain;
-        private CPFileBaseClass cf;
+       
         private long pos, cs, templateId, rootPageId, siteTemplateId;
         private const string crlf = "\n";
         public const string cr = "\t";
