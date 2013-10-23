@@ -117,6 +117,9 @@ namespace aoSEOSiteMap
                             sbSql.Append(" select distinct max(id) from cclinkaliases where ");
                             sbSql.Append(string.Format("(pageid={0})and(querystringsuffix is not null) group by querystringsuffix))", pageID));
                             sql = sbSql.ToString();
+                            //
+                            cp.Site.TestPoint("Link Alias SQL: " + sql);
+                            //
                             sbSql = new StringBuilder();
                             if (cs.OpenSQL(sql, "default", PageNumber: 1))
                             {
