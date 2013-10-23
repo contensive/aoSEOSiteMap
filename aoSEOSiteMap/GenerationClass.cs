@@ -14,7 +14,7 @@ namespace aoSEOSiteMap
         {
             try
             {
-                return "Hello World";
+                return "Hello GenerationClass";
                 CPCSBaseClass cs = cp.CSNew();
                 CPFileBaseClass cf = cp.File;
                 isAliasing = cp.Doc.GetBoolean("ALLOWLINKALIAS", string.Empty);
