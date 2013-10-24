@@ -5,7 +5,6 @@ using System.Text;
 using Contensive.BaseClasses;
 using System.Collections;
 using Microsoft.VisualBasic;
-
 namespace aoSEOSiteMap
 {
     public class GenerationClass : AddonBaseClass
@@ -14,7 +13,6 @@ namespace aoSEOSiteMap
         {
             try
             {
-                return "Hello GenerationClass";
                 CPCSBaseClass cs = cp.CSNew();
                 CPFileBaseClass cf = cp.File;
                 isAliasing = cp.Doc.GetBoolean("ALLOWLINKALIAS", string.Empty);
@@ -64,12 +62,12 @@ namespace aoSEOSiteMap
                     domainNameList = Strings.Mid(domainNameList, 1, index - 1);
                 }
 
-                sbSql.Append("select l.name from cclinkaliases l left join ccpagecontent p on p.id=l.pageid where ( l.id in (");
-                sbSql.Append(" select distinct max(id) from cclinkaliases where ");
-                sbSql.Append(string.Format("(pageid={0})and(querystringsuffix is not null) group by querystringsuffix))", pageID));
-                sql = sbSql.ToString();
-                cp.Site.TestPoint("Link Alias SQL: " + sql);
-                sql += "update ccaggregatefunctions set robotstxt='sitemap: http://" + domainNameList + "/SearchEngineSiteMap' where ccguid='{E036074B-6B71-4698-BA22-C34F7E9449E9}'";
+                //sbSql.Append("select l.name from cclinkaliases l left join ccpagecontent p on p.id=l.pageid where ( l.id in (");
+                //sbSql.Append(" select distinct max(id) from cclinkaliases where ");
+                //sbSql.Append(string.Format("(pageid={0})and(querystringsuffix is not null) group by querystringsuffix))", pageID));
+                //sql = sbSql.ToString();
+                //cp.Site.TestPoint("Link Alias SQL: " + sql);
+                sql = "update ccaggregatefunctions set robotstxt='sitemap: http://" + domainNameList + "/SearchEngineSiteMap' where ccguid='{E036074B-6B71-4698-BA22-C34F7E9449E9}'";
                 return Convert.ToString(cp.Db.ExecuteSQL(sql));
 
             }
