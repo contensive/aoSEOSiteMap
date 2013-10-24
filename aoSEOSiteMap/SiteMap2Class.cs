@@ -13,7 +13,6 @@ namespace aoSEOSiteMap
         {
             try
             {
-                return "Hello SEOSiteMap2";
                 CPCSBaseClass cs = cp.CSNew();
                 CPFileBaseClass cpFile = cp.File;
                 cp.Response.Clear();

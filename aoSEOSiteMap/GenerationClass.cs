@@ -108,7 +108,8 @@ namespace aoSEOSiteMap
                             {
                                 pageTemplateID = defaultTemplateId;
                             }
-                            pageID = cp.Doc.GetInteger("ID");
+                            //pageID = cp.Doc.GetInteger("ID");
+                            pageID = cs.GetInteger("id");
                             if (cp.Doc.GetText("link") == "")
                             {
                                 if (usedUrlList.IndexOf(pageLink, 1, StringComparison.CurrentCulture) == 0)
