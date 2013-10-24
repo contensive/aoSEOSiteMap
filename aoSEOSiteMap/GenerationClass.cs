@@ -54,7 +54,7 @@ namespace aoSEOSiteMap
                 cs.Close();
 
                 xmlContent = "" + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + crlf + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" +
-                    + kmIndent+
+                    +kmIndent +
                              "" + crlf + "</urlset>" + "";
                 cf.Save(cp.Site.PhysicalFilePath + mapFileName, xmlContent);
                 domainNameList = cp.Site.DomainList;
@@ -63,7 +63,13 @@ namespace aoSEOSiteMap
                 {
                     domainNameList = Strings.Mid(domainNameList, 1, index - 1);
                 }
-                sql = "update ccaggregatefunctions set robotstxt='sitemap: http://" + domainNameList + "/SearchEngineSiteMap' where ccguid='{E036074B-6B71-4698-BA22-C34F7E9449E9}'";
+
+                sbSql.Append("select l.name from cclinkaliases l left join ccpagecontent p on p.id=l.pageid where ( l.id in (");
+                sbSql.Append(" select distinct max(id) from cclinkaliases where ");
+                sbSql.Append(string.Format("(pageid={0})and(querystringsuffix is not null) group by querystringsuffix))", pageID));
+                sql = sbSql.ToString();
+                cp.Site.TestPoint("Link Alias SQL: " + sql);
+                sql += "update ccaggregatefunctions set robotstxt='sitemap: http://" + domainNameList + "/SearchEngineSiteMap' where ccguid='{E036074B-6B71-4698-BA22-C34F7E9449E9}'";
                 return Convert.ToString(cp.Db.ExecuteSQL(sql));
 
             }
@@ -80,7 +86,7 @@ namespace aoSEOSiteMap
             {
                 usedUrlList = string.Empty;
                 string xmlNodeList = string.Empty, criteria, pageLink = string.Empty, sql;
-                long pageID, pageTemplateID;
+                long pageTemplateID;
                 DateTime modifiedDate = new DateTime();
 
                 if (nodePageID != pageNotFoundId)
@@ -263,11 +269,11 @@ namespace aoSEOSiteMap
         }
 
         private bool isAliasing;
-        private long pageNotFoundId;
+        private long pageNotFoundId, pageID;
         private string primaryDomain, defaultPage, domainNameList, sql, xmlNode, xmlContent;
         private string temp, usedUrlList, pageLink;
         private string[] domain;
-       
+
         private long pos, cs, templateId, rootPageId, siteTemplateId;
         private const string crlf = "\n";
         public const string cr = "\t";
