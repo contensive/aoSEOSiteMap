@@ -31,7 +31,6 @@ namespace aoSEOSiteMap
                     primaryDomain = cp.Site.DomainList;
                 }
 
-                //if (cs.Open("Page Templates", SQLCriteria: "Name='Default", SelectFieldList: "ID"))
                 if(cs.Open("Page Templates", SQLCriteria: "Name='Default'", SelectFieldList:"ID"))
                 {
                     siteTemplateId = cp.Doc.GetInteger("ID");
@@ -54,9 +53,6 @@ namespace aoSEOSiteMap
                 }
                 cs.Close();
 
-                //xmlContent = "" + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + crlf + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" +
-                //    +kmIndent +
-                //             "" + crlf + "</urlset>" + "";
                 xmlContent = ""+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\" + crlf + \"<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\"+kmIndent +\"\" + crlf + \"</urlset>\""+"";
                 cf.Save(cp.Site.PhysicalFilePath + mapFileName, xmlContent);
                 domainNameList = cp.Site.DomainList;
@@ -73,7 +69,6 @@ namespace aoSEOSiteMap
                 //cp.Site.TestPoint("Link Alias SQL: " + sql);
                 sql = "update ccaggregatefunctions set robotstxt='sitemap: http://" + domainNameList + "/SearchEngineSiteMap' where ccguid='{E036074B-6B71-4698-BA22-C34F7E9449E9}'";
                 return Convert.ToString(cp.Db.ExecuteSQL(sql));
-
             }
             catch (Exception ex)
             {
@@ -115,7 +110,6 @@ namespace aoSEOSiteMap
                             {
                                 pageTemplateID = defaultTemplateId;
                             }
-                            //pageID = cp.Doc.GetInteger("ID");
                             pageID = cs.GetInteger("id");
                             if (cp.Doc.GetText("link") == "")
                             {
@@ -288,18 +282,18 @@ namespace aoSEOSiteMap
         //
         private bool isAliasing;
         private long pageNotFoundId, pageID;
-        private string primaryDomain, defaultPage, domainNameList, sql, xmlNode, xmlContent;
-        private string temp, usedUrlList, pageLink;
+        private string primaryDomain, defaultPage, domainNameList, sql, xmlContent;
+        private string usedUrlList;
         private string[] domain;
 
-        private long pos, cs, templateId, rootPageId, siteTemplateId;
+        private long templateId, rootPageId, siteTemplateId;
         private const string crlf = "\n";
         public const string cr = "\t";
         private const string cr2 = "\n\t";
         private const string cr3 = "\n\t\t\t";
         private StringBuilder sbSql = new StringBuilder();
         private const string mapFileName = "seoSiteMap.xml";
-        private int kmIndent;
+        //private int kmIndent;
 
     }
 }

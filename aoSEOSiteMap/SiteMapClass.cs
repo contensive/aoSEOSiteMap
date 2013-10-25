@@ -101,13 +101,6 @@ namespace aoSEOSiteMap
 
 
         private const string logFileName = "seoSitemap.log";
-        private string stream, pageLink;
-        private long pointer, count, pageID, pageNotFoundID;
-        private DateTime modifiedDate;
-        private object returnValue;
-        private object PCC;
-        private object PCC_ModifiedDate;
-        private object PCC_ID;
 
     }
 }
