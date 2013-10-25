@@ -31,7 +31,8 @@ namespace aoSEOSiteMap
                     primaryDomain = cp.Site.DomainList;
                 }
 
-                if (cs.Open("Page Templates", SQLCriteria: "Name='Default", SelectFieldList: "ID"))
+                //if (cs.Open("Page Templates", SQLCriteria: "Name='Default", SelectFieldList: "ID"))
+                if(cs.Open("Page Templates", SQLCriteria: "Name='Default'", SelectFieldList:"ID"))
                 {
                     siteTemplateId = cp.Doc.GetInteger("ID");
                 }
