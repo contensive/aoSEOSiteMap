@@ -101,6 +101,9 @@ namespace aoSEOSiteMap
 
                     if (cs.Open("Page Content", SQLCriteria: criteria, SortFieldList: "ID", PageNumber: 0, SelectFieldList: "ID,ModifiedDate,BlockContent,BlockPage,TemplateID,link"))
                     {
+                        //
+                        logEvent(cp, "getXmlNodeList - CS OK");
+                        //
                         do
                         {
                             pageTemplateID = cp.Doc.GetInteger("TemplateID");
@@ -118,13 +121,15 @@ namespace aoSEOSiteMap
                                     modifiedDate = cp.Doc.GetDate("ModifiedDate");
                                 }
                             }
-
+                            //
+                            logEvent(cp, "getXmlNodeList - pageID: " + pageID);
+                            //
                             sbSql.Append("select l.name from cclinkaliases l left join ccpagecontent p on p.id=l.pageid where ( l.id in (");
                             sbSql.Append(" select distinct max(id) from cclinkaliases where ");
                             sbSql.Append(string.Format("(pageid={0})and(querystringsuffix is not null) group by querystringsuffix))", pageID));
                             sql = sbSql.ToString();
                             //
-                            cp.Site.TestPoint("Link Alias SQL: " + sql);
+                            logEvent(cp, "getXmlNodeList - sql: " + sql);
                             //
                             sbSql = new StringBuilder();
                             if (cs.OpenSQL(sql, "default", PageNumber: 1))
@@ -266,7 +271,17 @@ namespace aoSEOSiteMap
             }
             return stream;
         }
-
+        //
+        private void logEvent(CPBaseClass cp, string eventInfo)
+        {
+            bool allowLogging = cp.Utils.EncodeBoolean(cp.Site.GetProperty("Allow SEO Sitemap Logging", "true"));
+            //
+            if (allowLogging)
+            {
+                cp.File.AppendVirtual("seoSitempaLog.log", DateAndTime.Now + ":" + eventInfo + "\r\n");
+            }
+        }
+        //
         private bool isAliasing;
         private long pageNotFoundId, pageID;
         private string primaryDomain, defaultPage, domainNameList, sql, xmlNode, xmlContent;
