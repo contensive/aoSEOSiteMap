@@ -54,9 +54,10 @@ namespace aoSEOSiteMap
                 }
                 cs.Close();
 
-                xmlContent = "" + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + crlf + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" +
-                    +kmIndent +
-                             "" + crlf + "</urlset>" + "";
+                //xmlContent = "" + "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + crlf + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" +
+                //    +kmIndent +
+                //             "" + crlf + "</urlset>" + "";
+                xmlContent = ""+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\" + crlf + \"<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\"+kmIndent +\"\" + crlf + \"</urlset>\""+"";
                 cf.Save(cp.Site.PhysicalFilePath + mapFileName, xmlContent);
                 domainNameList = cp.Site.DomainList;
                 int index = domainNameList.IndexOf(",", 1, StringComparison.CurrentCulture);
