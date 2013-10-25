@@ -13,6 +13,8 @@ namespace aoSEOSiteMap
         {
             try
             {
+                logEvent(cp, "start generation");
+                //
                 CPCSBaseClass cs = cp.CSNew();
                 CPFileBaseClass cf = cp.File;
                 isAliasing = cp.Doc.GetBoolean("ALLOWLINKALIAS", string.Empty);
