@@ -2,7 +2,7 @@
 <Collection name="Search Engine Site Map" guid="{98860879-ff8a-4109-858b-20ab72e72f8c}" system="No" updatable="Yes" blockNavigatorNode="No" onInstallAddonGuid="">
 	<HelpLink></HelpLink>
 	<Help></Help>
-	<Addon name="SearchEngineSiteMap" guid="{E036074B-6B71-4698-BA22-C34F7E9449E9}" type="Add-on">
+	<Addon name="sitemap.xml" guid="{E036074B-6B71-4698-BA22-C34F7E9449E9}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
 		<!-- deprecated --><ActiveXProgramID></ActiveXProgramID>

@@ -58,10 +58,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Contensive.CPBaseClass">
-      <Version>20.12.6.18</Version>
+      <Version>21.4.4.1</Version>
     </PackageReference>
     <PackageReference Include="Contensive.DbModels">
-      <Version>20.12.6.18</Version>
+      <Version>21.4.4.1</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
