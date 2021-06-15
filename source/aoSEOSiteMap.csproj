@@ -49,9 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GenerationClass.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Addons\GenerationClass.cs" />
+    <Compile Include="Models\SiteMapUrl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GetSiteMapClass.cs" />
+    <Compile Include="Addons\GetSiteMapClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SeoSiteMapKey.snk" />

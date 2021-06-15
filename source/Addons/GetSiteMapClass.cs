@@ -7,7 +7,6 @@ namespace Contensive.Addons.SeoSiteMap {
     //====================================================================================================
     //
     public class GetSiteMapClass : AddonBaseClass {
-        private const string MapFileName = "SeoSiteMap/SeoSiteMap.xml";
         //
         //====================================================================================================
         //
@@ -15,7 +14,7 @@ namespace Contensive.Addons.SeoSiteMap {
             try {
                 cp.Response.Clear();
                 cp.Response.SetType("text/XML");
-                return cp.CdnFiles.Read(MapFileName);
+                return cp.CdnFiles.Read(Constants.cdnPathFilenameSitemapFile);
             } catch(Exception ex) {
                 cp.Site.ErrorReport(ex);
                 throw;
