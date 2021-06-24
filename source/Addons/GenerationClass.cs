@@ -92,7 +92,10 @@ namespace Contensive.Addons.SeoSiteMap {
 
                 }
                 //
+                // -- write file from xmldoc (physical write), so first verify folders with a read, then after, call copylocaltoremote
+                string tmp = cp.CdnFiles.Read(Constants.cdnPathFilenameSitemapFile);
                 xmlDoc.Save(cp.CdnFiles.PhysicalFilePath + Constants.cdnPathFilenameSitemapFile);
+                cp.CdnFiles.CopyLocalToRemote(Constants.cdnPathFilenameSitemapFile);
                 //
                 // -- update the robots.txt section of this addon
                 cp.Db.ExecuteNonQuery("update ccaggregatefunctions set robotstxt='sitemap: https://" + cp.Site.DomainPrimary + "/sitemap.xml' where ccguid=" + cp.Db.EncodeSQLText(Constants.guidAddonGenerator));
