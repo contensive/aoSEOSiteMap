@@ -13,7 +13,7 @@ namespace Contensive.Addons.SeoSiteMap {
         public override object Execute(CPBaseClass cp) {
             try {
                 cp.Response.Clear();
-                cp.Response.SetType("text/XML");
+                cp.Response.SetType("application/xml");
                 return cp.CdnFiles.Read(Constants.cdnPathFilenameSitemapFile);
             } catch(Exception ex) {
                 cp.Site.ErrorReport(ex);
