@@ -5,7 +5,6 @@
 	<Addon name="sitemap.xml" guid="{E036074B-6B71-4698-BA22-C34F7E9449E9}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<!-- deprecated --><ActiveXProgramID></ActiveXProgramID>
 		<DotNetClass><![CDATA[Contensive.Addons.SeoSiteMap.GetSiteMapClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<instanceSettingPrimaryContentId></instanceSettingPrimaryContentId>
@@ -22,6 +21,7 @@
 		<JavascriptInHead></JavascriptInHead>
 		<javascriptForceHead>No</javascriptForceHead>
 		<JSHeadScriptSrc></JSHeadScriptSrc>
+		<JSHeadScriptPlatform5Src></JSHeadScriptPlatform5Src>
 		<!-- deprecated --><JSBodyScriptSrc></JSBodyScriptSrc>
 		<!-- deprecated --><JavascriptBodyEnd></JavascriptBodyEnd>
 		<!-- deprecated --><JavascriptOnLoad></JavascriptOnLoad>
@@ -44,12 +44,12 @@
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles></Styles>
 		<styleslinkhref></styleslinkhref>
-		<Scripting Language="" EntryPoint="" Timeout="5000"/>
+		<StylesLinkPlatform5Href></StylesLinkPlatform5Href>
+		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
 	</Addon>
 	<Addon name="SEOSiteMapGenerator" guid="{5A2A213F-E37B-4C91-9C53-3B85D23F829D}" type="Add-on">
 		<Copy></Copy>
 		<CopyText></CopyText>
-		<!-- deprecated --><ActiveXProgramID></ActiveXProgramID>
 		<DotNetClass><![CDATA[Contensive.Addons.SeoSiteMap.GenerationClass]]></DotNetClass>
 		<ArgumentList></ArgumentList>
 		<instanceSettingPrimaryContentId></instanceSettingPrimaryContentId>
@@ -66,6 +66,7 @@
 		<JavascriptInHead></JavascriptInHead>
 		<javascriptForceHead>No</javascriptForceHead>
 		<JSHeadScriptSrc></JSHeadScriptSrc>
+		<JSHeadScriptPlatform5Src></JSHeadScriptPlatform5Src>
 		<!-- deprecated --><JSBodyScriptSrc></JSBodyScriptSrc>
 		<!-- deprecated --><JavascriptBodyEnd></JavascriptBodyEnd>
 		<!-- deprecated --><JavascriptOnLoad></JavascriptOnLoad>
@@ -80,7 +81,7 @@
 		<RemoteMethod>No</RemoteMethod>
 		<Diagnostic>No</Diagnostic>
 		<category></category>
-		<ProcessRunOnce>Yes</ProcessRunOnce>
+		<ProcessRunOnce>No</ProcessRunOnce>
 		<ProcessInterval>720</ProcessInterval>
 		<MetaDescription></MetaDescription>
 		<OtherHeadTags></OtherHeadTags>
@@ -88,7 +89,15 @@
 		<RemoteAssetLink></RemoteAssetLink>
 		<Styles></Styles>
 		<styleslinkhref></styleslinkhref>
-		<Scripting Language="" EntryPoint="" Timeout="5000"/>
+		<StylesLinkPlatform5Href></StylesLinkPlatform5Href>
+		<Scripting Language="VBScript" EntryPoint="" Timeout="5000"/>
+		<ProcessTriggers>
+			<ContentChange name="Add-ons" guid="{BEA0C5A8-81A9-405F-9C04-9AA21F899A5D}"/>
+			<ContentChange name="Link Aliases" guid="{F2236BCF-B87F-4BAD-97D3-3C49F59F5125}"/>
+			<ContentChange name="Page Content" guid="{02203F58-0921-4F75-A089-0EAD6E8FEB4F}"/>
+		</ProcessTriggers>
 	</Addon>
-	<Resource name="aoseositemap.dll" type="executable" path="" />
+	<Resource name="contensivedbmodels.dll" type="executable" path="" />
+	<Resource name="cpbase.dll" type="executable" path="" />
+	<Resource name="seositemap.dll" type="executable" path="" />
 </Collection>

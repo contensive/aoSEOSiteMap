@@ -8,5 +8,6 @@ namespace Contensive.Addons.SeoSiteMap.Models {
     class SiteMapUrl {
         public string pathPage { get; set; }
         public DateTime lastMod { get; set; }
+        public int id { get; set; }
     }
 }

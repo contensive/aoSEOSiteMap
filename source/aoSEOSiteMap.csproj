@@ -51,20 +51,38 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Addons\GenerationClass.cs" />
+    <Compile Include="Models\EcommerceCatalogModel.cs" />
     <Compile Include="Models\SiteMapUrl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Addons\GetSiteMapClass.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="SeoSiteMapKey.snk" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Contensive.CPBaseClass">
-      <Version>21.4.4.1</Version>
+      <Version>22.8.16.1</Version>
     </PackageReference>
     <PackageReference Include="Contensive.DbModels">
-      <Version>21.4.4.1</Version>
+      <Version>22.8.16.1</Version>
     </PackageReference>
+    <PackageReference Include="Contensive.EcommerceApi">
+      <Version>22.10.18.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\sql_sitemap.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

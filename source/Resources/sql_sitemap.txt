@@ -1,0 +1,9 @@
+﻿select 
+	l.name,l.ModifiedDate,l.querystringsuffix,p.id
+from 
+	ccLinkAliases l 
+	left join ccPageContent p on p.id=l.pageid 
+where 
+	not (BlockContent<>0 or BlockPage<>0 or AllowMetaContentNoFollow<>0)
+order by
+	l.id desc

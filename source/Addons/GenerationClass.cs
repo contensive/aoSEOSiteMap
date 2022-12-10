@@ -25,38 +25,54 @@ namespace Contensive.Addons.SeoSiteMap {
                     //
                     // -- add link alias entries
                     using (CPCSBaseClass cs = cp.CSNew()) {
-                        if (cs.OpenSQL("select l.name,l.ModifiedDate from ccLinkAliases l left join ccPageContent p on p.id=l.pageid where (p.blockcontent=0) and (p.blockpage=0) and (p.allowmetacontentnofollow=0)")) {
+                        if (cs.OpenSQL(Properties.Resources.sql_sitemap)) {
+                            List<string> links = new List<string>();
                             do {
-                                unSortedList.Add(new SiteMapUrl {
-                                    lastMod = cs.GetDate("ModifiedDate"),
-                                    pathPage = cs.GetText("name")
-                                });
+                                string uniqueName = cs.GetInteger("id").ToString() + "?" + cs.GetText("querystringsuffix");
+                                if (!links.Contains(uniqueName)) {
+                                    links.Add(uniqueName);
+                                    unSortedList.Add(new SiteMapUrl {
+                                        lastMod = cs.GetDate("ModifiedDate"),
+                                        pathPage = cs.GetText("name"),
+                                        id = cs.GetInteger("id")
+                                    });
+                                }
                                 cs.GoNext();
                             } while (cs.OK());
                         }
                     }
                 }
-                {
-                    //
-                    // -- add catalog products
-                    if (cp.Content.IsField("items", "id")) {
-                        int shopPageId = cp.Site.GetInteger("shopping-cart-pageId");
-                        if (shopPageId > 0) {
-                            string cartPathFilename = cp.Content.GetLinkAliasByPageID(shopPageId, "", "") + "?viewid=detail";
-                            using (CPCSBaseClass cs = cp.CSNew()) {
-                                if (cs.Open("items", "isInCatalog>0","id",true, "ModifiedDate,id")) {
-                                    do {
-                                        unSortedList.Add(new SiteMapUrl {
-                                            lastMod = cs.GetDate("ModifiedDate"),
-                                            pathPage = cartPathFilename + "&item=" + cs.GetInteger("id")
-                                        });
-                                        cs.GoNext();
-                                    } while (cs.OK());
-                                }
-                            }
-                        }
-                    }
-                }
+                //
+                // -- items all have their own link alias now
+                //
+                //{
+                //    //
+                //    // -- add catalog products
+                //    // -- limited to one catalog on the site. 
+                //    if (cp.Content.IsField("items", "id")) {
+                //        int shopPageId = EcommerceCatalogModel.getPrimaryCatalogLastPageId(cp);
+                //        SiteMapUrl shopPage = unSortedList.Find(x => x.id == shopPageId);
+                //        if (shopPage!=null) {
+                //            // 
+                //            // -- catalog is within an allowed page
+                //            string catalogBaseUrl = cp.Content.GetLinkAliasByPageID(shopPageId, "", "");
+                //            if (!string.IsNullOrEmpty(catalogBaseUrl)) {
+                //                using (CPCSBaseClass cs = cp.CSNew()) {
+                //                    if (cs.Open("items", "isInCatalog>0", "id", true, "ModifiedDate,id")) {
+                //                        do {
+                //                            string urlQs = "view=detail&item=" + cs.GetInteger("id");
+                //                            unSortedList.Add(new SiteMapUrl {
+                //                                lastMod = cs.GetDate("ModifiedDate"),
+                //                                pathPage = cp.Content.GetLinkAliasByPageID(shopPageId, urlQs, catalogBaseUrl + "?" + urlQs)
+                //                            }); ;
+                //                            cs.GoNext();
+                //                        } while (cs.OK());
+                //                    }
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
                 //
                 // -- sort urlList by modifiedDate newest first
                 List<SiteMapUrl> sortedList = unSortedList.OrderByDescending(o => o.lastMod).ToList();
@@ -93,7 +109,7 @@ namespace Contensive.Addons.SeoSiteMap {
                 }
                 //
                 // -- write file from xmldoc (physical write), so first verify folders with a read, then after, call copylocaltoremote
-                string tmp = cp.CdnFiles.Read(Constants.cdnPathFilenameSitemapFile);
+                cp.CdnFiles.CreateFolder(System.IO.Path.GetDirectoryName(Constants.cdnPathFilenameSitemapFile));
                 xmlDoc.Save(cp.CdnFiles.PhysicalFilePath + Constants.cdnPathFilenameSitemapFile);
                 cp.CdnFiles.CopyLocalToRemote(Constants.cdnPathFilenameSitemapFile);
                 //

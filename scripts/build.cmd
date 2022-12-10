@@ -9,7 +9,7 @@ rem
 c:
 cd \Git\aoSEOSiteMap\scripts
 
-set appName=app210530
+
 set collectionName=SeoSiteMap
 set collectionPath=..\collections\SeoSiteMap\
 set solutionName=aoSEOSiteMap.sln
