@@ -21,7 +21,7 @@ namespace Contensive.Addons.SeoSiteMap.Models {
                     // -- ecommerce > 22.12.10.0
                     using (var dt = cp.Db.ExecuteQuery("select top 1 lastPageId from ecEcommerceCatalogs order by id")) {
                         if (dt?.Rows == null || dt.Rows.Count == 0) { return 0; }
-                        return (int)dt.Rows[0][0];
+                        return cp.Utils.EncodeInteger( dt.Rows[0][0]);
                     }
                 }
             } catch (Exception ex) {

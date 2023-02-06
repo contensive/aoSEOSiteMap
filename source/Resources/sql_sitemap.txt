@@ -1,8 +1,9 @@
 ﻿select 
-	l.name,l.ModifiedDate,l.querystringsuffix,p.id
+	l.name,l.ModifiedDate,l.querystringsuffix,p.id,d.name as domainRoot
 from 
 	ccLinkAliases l 
 	left join ccPageContent p on p.id=l.pageid 
+	left join ccDomains d on d.rootpageid=p.id
 where 
 	not (BlockContent<>0 or BlockPage<>0 or AllowMetaContentNoFollow<>0)
 order by
