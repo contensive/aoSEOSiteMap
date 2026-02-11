@@ -22,10 +22,21 @@ namespace Contensive.Addons.SeoSiteMap {
                 // -- gather all links
                 var unSortedList = new List<SiteMapUrl>();
                 {
-                    //
                     // -- add link alias entries
                     using (CPCSBaseClass cs = cp.CSNew()) {
-                        if (cs.OpenSQL(Properties.Resources.sql_sitemap)) {
+                        string sql = $@"
+                            select 
+	                            l.name,l.ModifiedDate,l.querystringsuffix,p.id,d.name as domainRoot
+                            from 
+	                            ccLinkAliases l 
+	                            left join ccPageContent p on p.id=l.pageid 
+	                            left join ccDomains d on d.rootpageid=p.id
+                            where 
+	                            not (BlockContent<>0 or BlockPage<>0 or AllowMetaContentNoFollow<>0)
+                            order by
+	                            l.id desc
+                            ";
+                        if (cs.OpenSQL(sql)) {
                             List<string> links = new List<string>();
                             do {
                                 string uniqueName = cs.GetInteger("id").ToString() + "?" + cs.GetText("querystringsuffix");

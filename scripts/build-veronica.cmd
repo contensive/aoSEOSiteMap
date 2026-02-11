@@ -3,13 +3,11 @@ rem echo off
 
 rem build and deliver to deployment folder
 
-set appName=menucrm0210
+set appName=veronica
 
 call build.cmd
 
-
-
-rem upload to contensive application
+rem upload to application
 c:
 cd %collectionPath%
 cc -a %appName% --installFile "%collectionName%.zip"

@@ -18,11 +18,6 @@ set binPath=..\source\bin\debug\
 set msbuildLocation=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\
 set deploymentFolderRoot=C:\Deployments\aoSEOSiteMap\Dev\
 
-rem prompt user if appName is correct
-@echo Build project and install on site: %appName%
-pause
-
-
 rem Setup deployment folder
 
 set year=%date:~12,4%
@@ -55,10 +50,10 @@ echo build solution
 rem
 cd ..\source
 
-"%msbuildLocation%msbuild.exe" %solutionName%
+rem "%msbuildLocation%msbuild.exe" %solutionName%
 
-rem dotnet clean %solutionName%
-rem dotnet build %projectName% --configuration Debug --no-dependencies /property:Version=%versionNumber% /property:AssemblyVersion=%versionNumber% /property:FileVersion=%versionNumber%
+dotnet clean %solutionName%
+dotnet build %projectName% --configuration Debug --no-dependencies /property:Version=%versionNumber% /property:AssemblyVersion=%versionNumber% /property:FileVersion=%versionNumber%
 if errorlevel 1 (
    echo failure building catalog
    pause
